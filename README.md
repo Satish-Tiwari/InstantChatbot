@@ -73,7 +73,7 @@ A SaaS platform that transforms any website into a deployable AI-powered chatbot
 
 ```bash
 git clone <repository-url>
-cd instant-chatbot-generator
+cd InstantChatbot
 
 # Create .env for each service from their templates
 cp backend/.env.example backend/.env
@@ -249,34 +249,6 @@ chatbot-server/
 ```
 PENDING → CRAWLING → PROCESSING → EMBEDDING → READY
                                              ↘ FAILED
-```
-
----
-
-## 📄 License
-
-MIT License
-
----
-
-Built with ❤️ using Spring Boot, Spring AI, PGVector, Next.js, and OpenAI
-## 🔒 Security
-
-- **Separate Secret Keys** — Backend (`JWT_SECRET`) and frontend (`NEXTAUTH_SECRET`) each have independent secrets
-- **JWT Authentication** — Stateless token-based auth signed with the backend secret
-- **Password Hashing** — BCrypt encryption
-- **Data Isolation** — PGVector metadata filtering per project
-- **Zod Validation** — Client-side schema validation on all forms
-- **URL Validation** — Server-side input sanitization
-- **CORS Configuration** — Configurable allowed origins
-
----
-
-## 📊 Project Status Flow
-
-```
-PENDING → CRAWLING → PROCESSING → EMBEDDING → READY
-                                            ↘ FAILED
 ```
 
 ---
