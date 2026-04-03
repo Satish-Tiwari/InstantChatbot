@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.next/
+target/
+__pycache__/
+*.pyc
+*.class
+venv/
+.venv/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+*.jar
+
+# Storage
+generated-bots/
+chroma_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/

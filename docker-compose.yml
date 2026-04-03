@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # ─── PostgreSQL with PGVector Extension ───
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: instantchatbot-postgres
+    environment:
+      POSTGRES_DB: instantchatbot
+      POSTGRES_USER: instantchatbot
+      POSTGRES_PASSWORD: instantchatbot123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U instantchatbot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - instantchatbot-net
+
+  # ─── Spring Boot Backend (includes all AI/RAG logic) ───
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: instantchatbot-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: instantchatbot
+      DB_USERNAME: instantchatbot
+      DB_PASSWORD: instantchatbot123
+      ZIP_STORAGE_PATH: /app/generated-bots
+      CORS_ORIGINS: http://localhost:3000
+      SERVER_PORT: 8080
+    volumes:
+      - bot_storage:/app/generated-bots
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - instantchatbot-net
+
+  # ─── Next.js Frontend ───
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: instantchatbot-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - instantchatbot-net
+
+volumes:
+  postgres_data:
+  bot_storage:
+
+networks:
+  instantchatbot-net:
+    driver: bridge

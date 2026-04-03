@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@layer base {
+  body {
+    @apply bg-surface text-gray-100 font-sans;
+  }
+
+  /* Ambient glow background */
+  body::before {
+    content: '';
+    @apply fixed inset-0 pointer-events-none z-0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(102, 126, 234, 0.06), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(118, 75, 162, 0.04), transparent),
+      radial-gradient(ellipse 40% 60% at 50% 80%, rgba(102, 126, 234, 0.03), transparent);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { @apply w-1.5; }
+  ::-webkit-scrollbar-track { @apply bg-surface; }
+  ::-webkit-scrollbar-thumb { @apply bg-brand-500 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-brand-400; }
+}
+
+@layer components {
+  .glass {
+    @apply bg-surface-50/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl;
+  }
+
+  .glass-hover {
+    @apply hover:bg-surface-300/80 hover:border-brand-500/25
+           hover:shadow-[0_0_30px_rgba(102,126,234,0.15)]
+           hover:-translate-y-0.5 transition-all duration-300;
+  }
+
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3
+           bg-gradient-brand text-white font-semibold rounded-xl
+           shadow-[0_4px_15px_rgba(102,126,234,0.3)]
+           hover:shadow-[0_6px_25px_rgba(102,126,234,0.5)]
+           hover:-translate-y-0.5 active:scale-[0.97]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+           transition-all duration-300;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3
+           bg-white/[0.03] text-gray-200 font-semibold rounded-xl
+           border border-white/[0.08]
+           hover:border-brand-500/40 hover:text-brand-400
+           active:scale-[0.97] disabled:opacity-50
+           transition-all duration-300;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-surface-100 border border-white/[0.08]
+           rounded-xl text-gray-100 placeholder-gray-500
+           focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
+           transition-all duration-300;
+  }
+
+  .input-error {
+    @apply border-red-500/50 focus:border-red-500 focus:ring-red-500/20;
+  }
+}

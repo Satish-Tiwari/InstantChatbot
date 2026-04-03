@@ -1,0 +1,29 @@
+# Compiled class file
+target/
+*.class
+
+# Log file
+*.log
+startup-log.txt
+
+# Package file
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+
+# Environment
+.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+bin/
