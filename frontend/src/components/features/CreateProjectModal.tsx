@@ -91,8 +91,69 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
             )}
           </div>
 
+          {/* Advanced AI Settings Toggle */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('advanced-ai-settings');
+                if (el) el.classList.toggle('hidden');
+              }}
+              className="text-sm font-medium text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-1"
+            >
+              Advanced AI Settings (Optional)
+            </button>
+            <div id="advanced-ai-settings" className="hidden space-y-4 mt-4 p-4 rounded-xl border border-gray-800 bg-black/20">
+              <p className="text-xs text-gray-500 mb-2">
+                Provide your own API keys to avoid global rate limits and use specific models.
+              </p>
+              
+              {/* OpenAI Key */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">OpenAI API Key</label>
+                <input
+                  {...register('customOpenAiApiKey')}
+                  type="password"
+                  className="input-field py-1.5 text-sm"
+                  placeholder="sk-..."
+                />
+              </div>
+
+              {/* Anthropic Key */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Anthropic API Key</label>
+                <input
+                  {...register('customAnthropicApiKey')}
+                  type="password"
+                  className="input-field py-1.5 text-sm"
+                  placeholder="sk-ant-..."
+                />
+              </div>
+
+              {/* Google Vertex */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Google Project ID</label>
+                  <input
+                    {...register('customGoogleProjectId')}
+                    className="input-field py-1.5 text-sm"
+                    placeholder="my-project-id"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Google Location</label>
+                  <input
+                    {...register('customGoogleLocation')}
+                    className="input-field py-1.5 text-sm"
+                    placeholder="us-central1"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-4 border-t border-gray-800/50">
             <button type="button" onClick={onClose} className="btn-ghost flex-1">
               Cancel
             </button>

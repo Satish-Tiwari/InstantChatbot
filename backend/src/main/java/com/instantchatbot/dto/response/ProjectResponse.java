@@ -29,4 +29,16 @@ public class ProjectResponse {
     private boolean downloadReady;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    /** User-provided AI provider override, if any */
+    private String customAiProvider;
+    
+    /** Flag indicating if a custom OpenAI key is currently configured */
+    private boolean hasCustomOpenAiKey;
+    
+    /** Flag indicating if a custom Anthropic key is currently configured */
+    private boolean hasCustomAnthropicKey;
+    
+    /** Flag indicating if a custom Google/Vertex AI configuration is present */
+    private boolean hasCustomGoogleKey;
 }

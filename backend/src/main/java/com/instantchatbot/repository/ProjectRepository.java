@@ -30,4 +30,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      * @return an Optional containing the project if found and owned by the user
      */
     Optional<Project> findByIdAndUserId(Long id, Long userId);
+
+    /**
+     * Checks if a project exists and belongs to a specific user.
+     *
+     * @param id the project identifier
+     * @param userId the expected owner's identifier
+     * @return true if the project exists for the given user, false otherwise
+     */
+    boolean existsByIdAndUserId(Long id, Long userId);
 }

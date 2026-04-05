@@ -68,10 +68,16 @@ export function CrawlProgress({ crawlJob, status }: CrawlProgressProps) {
                 {isActive && (
                   <div className="mt-2 h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-brand rounded-full animate-pulse-slow"
-                      style={{ width: '60%' }}
+                      className="h-full bg-gradient-brand rounded-full animate-pulse-slow transition-all duration-1000"
+                      style={{ width: isDone ? '100%' : '60%' }}
                     />
                   </div>
+                )}
+
+                {isActive && step.key === 'CRAWLING' && crawlJob?.currentUrl && (
+                  <p className="mt-2 text-[10px] font-mono text-brand-400/80 truncate animate-fade-in max-w-md">
+                    Crawling: {crawlJob.currentUrl}
+                  </p>
                 )}
               </div>
 

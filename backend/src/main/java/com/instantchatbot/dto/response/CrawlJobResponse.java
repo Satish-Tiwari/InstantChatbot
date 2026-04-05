@@ -27,6 +27,8 @@ public class CrawlJobResponse {
     private CrawlStatus status;
     /** Error description if the job failed */
     private String errorMessage;
+    /** The URL currently being crawled for real-time progress display */
+    private String currentUrl;
     /** Timestamp when the job was queued/started */
     private LocalDateTime startedAt;
     /** Timestamp when the job reached a terminal state (COMPLETED/FAILED) */

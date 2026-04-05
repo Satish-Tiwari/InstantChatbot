@@ -1,27 +1,44 @@
 'use client';
 
-import { use } from 'react';
 import Link from 'next/link';
 import { useProject, useStartCrawl, useDownloadBot } from '@/hooks/useProjects';
 import { CrawlProgress } from '@/components/features/CrawlProgress';
 import { ChatPreview } from '@/components/features/ChatPreview';
+import { CrawlOverlay } from '@/components/features/CrawlOverlay';
+import { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft, Globe, Loader2, Download, Play,
-  FileText, Layers, Clock, RefreshCw, Code2,
+  FileText, Layers, Clock, RefreshCw, Code2, Activity, ArrowUpRight,
 } from 'lucide-react';
 import { cn, getStatusColor, getStatusLabel, isProcessing, formatDate, formatRelativeTime } from '@/lib/utils';
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export default function ProjectDetailPage({ params }: PageProps) {
-  const { id } = use(params);
+  const { id } = params;
   const projectId = parseInt(id, 10);
 
   const { data: project, isLoading, isError } = useProject(projectId);
+  const [isOverlayOpen, setOverlayOpen] = useState(false);
+  const hasAutoOpened = useRef(false);
+
+  // Auto-open scanner if project is currently processing
+  useEffect(() => {
+    if (project && isProcessing(project.status) && !hasAutoOpened.current) {
+      setOverlayOpen(true);
+      hasAutoOpened.current = true;
+    }
+  }, [project]);
   const crawlMutation = useStartCrawl();
   const downloadMutation = useDownloadBot();
+
+  const handleStartCrawl = (id: number) => {
+    crawlMutation.mutate(id, {
+      onSuccess: () => setOverlayOpen(true),
+    });
+  };
 
   if (isLoading) {
     return (
@@ -63,13 +80,16 @@ export default function ProjectDetailPage({ params }: PageProps) {
         <div className="flex items-center gap-4 mb-2">
           <h1 className="text-3xl font-bold">{project.name}</h1>
           <span
+            onClick={() => processing && setOverlayOpen(true)}
             className={cn(
               'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide',
+              processing && 'cursor-pointer hover:brightness-125 transition-all',
               getStatusColor(project.status)
             )}
           >
             {processing && <Loader2 className="w-3 h-3 animate-spin" />}
             {getStatusLabel(project.status)}
+            {processing && <ArrowUpRight className="w-3 h-3 ml-0.5" />}
           </span>
         </div>
         <a
@@ -87,7 +107,7 @@ export default function ProjectDetailPage({ params }: PageProps) {
       <div className="flex gap-3 mb-8 animate-fade-in" style={{ animationDelay: '100ms' }}>
         {canStartCrawl && (
           <button
-            onClick={() => crawlMutation.mutate(projectId)}
+            onClick={() => handleStartCrawl(projectId)}
             disabled={crawlMutation.isPending}
             className="btn-brand"
           >
@@ -112,6 +132,18 @@ export default function ProjectDetailPage({ params }: PageProps) {
               <Download className="w-4 h-4" />
             )}
             Download Chatbot ZIP
+          </button>
+        )}
+
+        {processing && (
+          <button
+            onClick={() => setOverlayOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-500/10 
+                       border border-brand-500/20 text-brand-400 font-semibold text-sm 
+                       hover:bg-brand-500/15 transition-all active:scale-95"
+          >
+            <Activity className="w-4 h-4" />
+            Open Live Scanner
           </button>
         )}
       </div>
@@ -182,6 +214,16 @@ export default function ProjectDetailPage({ params }: PageProps) {
           <ChatPreview projectId={projectId} isReady={isReady} />
         </div>
       </div>
+
+      {project && (
+        <CrawlOverlay
+          projectId={projectId}
+          projectUrl={project.websiteUrl}
+          projectName={project.name}
+          isOpen={isOverlayOpen}
+          onClose={() => setOverlayOpen(false)}
+        />
+      )}
     </div>
   );
 }

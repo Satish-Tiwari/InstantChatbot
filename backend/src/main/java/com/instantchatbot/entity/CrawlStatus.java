@@ -6,6 +6,8 @@ package com.instantchatbot.entity;
 public enum CrawlStatus {
     QUEUED,
     IN_PROGRESS,
+    PAUSED,
     COMPLETED,
-    FAILED
+    FAILED,
+    CANCELLED
 }

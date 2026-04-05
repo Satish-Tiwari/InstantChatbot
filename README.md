@@ -8,7 +8,10 @@ A SaaS platform that transforms any website into a deployable AI-powered chatbot
 
 - **Smart Web Crawling** — Jsoup-powered crawler follows internal links + sitemap.xml
 - **Content Processing** — Cleans HTML, removes boilerplate, chunks text semantically
-- **RAG Pipeline (Spring AI)** — OpenAI embeddings + PGVector store + GPT-4o-mini generation
+- **Automatic AI Failover** — Self-healing RAG pipeline (OpenAI → Anthropic → Google)
+- **User-Provided API Keys** — Users can use their own OpenAI/Anthropic keys for project isolation
+- **Switchable Engines** — Toggle between AI providers instantly via UI or environment variables
+- **Free Key Guide** — [Detailed guide on getting free API keys for all models](./doc/ai-model-keys.md)
 - **Code Generation** — Auto-generates a FastAPI chatbot server + embeddable widget
 - **ZIP Packaging** — Download a ready-to-deploy chatbot with docs & deployment scripts
 - **Modern Dashboard** — Dark theme Next.js UI with real-time progress tracking
@@ -50,7 +53,7 @@ A SaaS platform that transforms any website into a deployable AI-powered chatbot
 | Component | Technology |
 |-----------|-----------|
 | **Backend API** | Spring Boot 3.2, Java 17, Spring Security, JPA |
-| **AI / RAG** | Spring AI 1.0, OpenAI (GPT-4o-mini + text-embedding-3-small) |
+| **AI / RAG** | Spring AI 1.0, OpenAI, Anthropic (Claude), Google (Gemini) |
 | **Vector Store** | PGVector (PostgreSQL extension via Spring AI) |
 | **Web Crawling** | Jsoup 1.17 |
 | **Frontend** | Next.js 14, TypeScript, Tailwind CSS |
@@ -61,6 +64,16 @@ A SaaS platform that transforms any website into a deployable AI-powered chatbot
 | **Deployment** | Docker, Docker Compose |
 
 ---
+
+## 🖼️ Platform Showcase
+
+| ![Dashboard](./doc/screenshots/dashboard.png) | ![New Project](./doc/screenshots/new-project.png) |
+|:---:|:---:|
+| **Project Dashboard** | **Multi-Model Configuration** |
+
+| ![Crawl Progress](./doc/screenshots/progress.png) | ![Chat Preview](./doc/screenshots/chat-preview.png) |
+|:---:|:---:|
+| **Real-time Crawling** | **Context-Aware Chat Preview** |
 
 ## 🚀 Quick Start (Development)
 
@@ -156,7 +169,8 @@ URL Input → WebCrawlerService (Jsoup)
 | `ContentCleanerService` | Strips boilerplate, extracts main content |
 | `TextChunkerService` | Splits text into semantic chunks with overlap |
 | `EmbeddingService` | Generates embeddings, stores in PGVector, searches |
-| `RagService` | Retrieves context + generates answers via ChatClient |
+| `RagService` | Retrieves context + generates answers with multi-model failover |
+| `AiModelOrchestrator` | Manages global vs. user-provided AI models and keys |
 | `CrawlPipelineService` | Orchestrates the full async pipeline |
 
 ---

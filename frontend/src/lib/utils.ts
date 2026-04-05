@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /** Format a date string to locale display */
 export function formatDate(date: string | null | undefined): string {
-  if (!date) return '—';
+  if (!date) return '-';
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -18,7 +18,7 @@ export function formatDate(date: string | null | undefined): string {
 
 /** Format a date string to relative time */
 export function formatRelativeTime(date: string | null | undefined): string {
-  if (!date) return '—';
+  if (!date) return '-';
   const now = new Date();
   const d = new Date(date);
   const diffMs = now.getTime() - d.getTime();
@@ -42,6 +42,9 @@ export function getStatusColor(status: string): string {
     EMBEDDING: 'text-purple-400 bg-purple-400/10',
     GENERATING: 'text-purple-400 bg-purple-400/10',
     READY: 'text-emerald-400 bg-emerald-400/10',
+    COMPLETED: 'text-emerald-400 bg-emerald-400/10',
+    PAUSED: 'text-amber-400 bg-amber-400/10',
+    CANCELLED: 'text-red-400 bg-red-400/10',
     FAILED: 'text-red-400 bg-red-400/10',
   };
   return map[status] || 'text-gray-400 bg-gray-400/10';
@@ -56,6 +59,9 @@ export function getStatusLabel(status: string): string {
     EMBEDDING: 'Embedding',
     GENERATING: 'Generating',
     READY: 'Ready',
+    COMPLETED: 'Finished',
+    PAUSED: 'Paused',
+    CANCELLED: 'Stopped',
     FAILED: 'Failed',
   };
   return map[status] || status;

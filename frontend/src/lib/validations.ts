@@ -41,6 +41,11 @@ export const createProjectSchema = z.object({
     .refine((url) => url.startsWith('http://') || url.startsWith('https://'), {
       message: 'URL must start with http:// or https://',
     }),
+  customAiProvider: z.string().optional(),
+  customOpenAiApiKey: z.string().optional(),
+  customAnthropicApiKey: z.string().optional(),
+  customGoogleProjectId: z.string().optional(),
+  customGoogleLocation: z.string().optional(),
 });
 
 export const chatSchema = z.object({

@@ -26,4 +26,29 @@ public class CreateProjectRequest {
     @NotBlank(message = "Website URL is required")
     @URL(message = "Invalid URL format")
     private String websiteUrl;
+
+    /**
+     * User-provided AI provider override, if any.
+     */
+    private String customAiProvider;
+
+    /**
+     * Optional user-provided OpenAI API Key for project isolation.
+     */
+    private String customOpenAiApiKey;
+
+    /**
+     * Optional user-provided Anthropic API Key.
+     */
+    private String customAnthropicApiKey;
+
+    /**
+     * Optional Google Project ID for custom Vertex AI usage.
+     */
+    private String customGoogleProjectId;
+
+    /**
+     * Optional Google Location for custom Vertex AI usage.
+     */
+    private String customGoogleLocation;
 }

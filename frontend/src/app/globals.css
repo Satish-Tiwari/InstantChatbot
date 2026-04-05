@@ -66,4 +66,24 @@
   .input-error {
     @apply border-red-500/50 focus:border-red-500 focus:ring-red-500/20;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-black/10 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  }
+
+  .custom-scrollbar-compact::-webkit-scrollbar {
+    @apply w-1;
+  }
+  .custom-scrollbar-compact::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar-compact::-webkit-scrollbar-thumb {
+    @apply bg-white/5 rounded-full hover:bg-brand-500/40 transition-colors;
+  }
 }

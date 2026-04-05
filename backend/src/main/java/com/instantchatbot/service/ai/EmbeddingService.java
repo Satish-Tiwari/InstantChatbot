@@ -46,7 +46,7 @@ public class EmbeddingService {
         for (int i = 0; i < chunks.size(); i++) {
             TextChunkerService.TextChunk chunk = chunks.get(i);
 
-            // Build metadata — Spring AI Document metadata must be String values
+            // Build metadata - Spring AI Document metadata must be String values
             Map<String, Object> metadata = new HashMap<>();
             metadata.put("project_id", projectId);
             metadata.put("chunk_index", String.valueOf(i));

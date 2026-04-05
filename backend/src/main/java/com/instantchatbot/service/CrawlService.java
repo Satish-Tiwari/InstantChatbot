@@ -42,20 +42,15 @@ public class CrawlService {
 
     /**
      * Initiates a crawl and RAG processing job for a specific project.
-     * Resets or creates a new CrawlJob record and triggers the async pipeline.
-     *
-     * @param projectId the unique identifier of the project to crawl
-     * @param userId the identifier of the requesting user (for ownership validation)
-     * @throws ResourceNotFoundException if the project does not exist
-     * @throws BadRequestException if the project is currently being processed
      */
     @Transactional
     public void startCrawl(Long projectId, Long userId) {
         Project project = projectRepository.findByIdAndUserId(projectId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        if (project.getStatus() != ProjectStatus.PENDING &&
-            project.getStatus() != ProjectStatus.FAILED) {
+        // Allow restarting from any state if not currently IN_PROGRESS
+        CrawlJob currentJob = project.getCrawlJob();
+        if (currentJob != null && currentJob.getStatus() == CrawlStatus.IN_PROGRESS) {
             throw new BadRequestException("Project is already being processed");
         }
 
@@ -80,8 +75,55 @@ public class CrawlService {
         projectRepository.save(project);
 
         log.info("Crawl started for project: {}", projectId);
-
-        // Trigger async pipeline — everything runs inside Spring Boot now
         pipelineService.executePipeline(projectId);
+    }
+
+    /**
+     * Attempts to stop a running crawl job after validating user ownership.
+     *
+     * @param projectId the unique identifier of the project 
+     * @param userId the user ID to check for project ownership
+     */
+    @Transactional
+    public void stopCrawl(Long projectId, Long userId) {
+        validateOwnership(projectId, userId);
+        pipelineService.stopJob(projectId);
+    }
+
+    /**
+     * Attempts to pause a running crawl job after validating user ownership.
+     *
+     * @param projectId the unique identifier of the project 
+     * @param userId the user ID to check for project ownership
+     */
+    @Transactional
+    public void pauseCrawl(Long projectId, Long userId) {
+        validateOwnership(projectId, userId);
+        pipelineService.pauseJob(projectId);
+    }
+
+    /**
+     * Attempts to resume a paused crawl job after validating user ownership.
+     *
+     * @param projectId the unique identifier of the project 
+     * @param userId the user ID to check for project ownership
+     */
+    @Transactional
+    public void resumeCrawl(Long projectId, Long userId) {
+        validateOwnership(projectId, userId);
+        pipelineService.resumeJob(projectId);
+    }
+
+    /**
+     * Validates that a project exists and belongs to the specified user.
+     *
+     * @param projectId the unique identifier of the project
+     * @param userId the identifier of the owner to validate
+     * @throws ResourceNotFoundException if the project does not exist or is not owned by the user
+     */
+    private void validateOwnership(Long projectId, Long userId) {
+        if (!projectRepository.existsByIdAndUserId(projectId, userId)) {
+            throw new ResourceNotFoundException("Project not found");
+        }
     }
 }

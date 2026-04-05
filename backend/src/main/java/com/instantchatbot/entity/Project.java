@@ -77,6 +77,33 @@ public class Project {
     private Integer chunksCreated;
 
     /**
+     * User-specific AI Provider override for this project (e.g., openai, anthropic).
+     */
+    private String customAiProvider;
+
+    /**
+     * User-provided OpenAI API Key for this project.
+     */
+    @Column(length = 500)
+    private String customOpenAiApiKey;
+
+    /**
+     * User-provided Anthropic API Key for this project.
+     */
+    @Column(length = 500)
+    private String customAnthropicApiKey;
+
+    /**
+     * User-provided Google Project ID for Vertex AI.
+     */
+    private String customGoogleProjectId;
+
+    /**
+     * User-provided Google Location for Vertex AI.
+     */
+    private String customGoogleLocation;
+
+    /**
      * Timestamp when the project was created.
      */
     @CreationTimestamp

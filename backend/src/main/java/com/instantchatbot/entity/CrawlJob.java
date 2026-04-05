@@ -64,6 +64,11 @@ public class CrawlJob {
     private String errorMessage;
 
     /**
+     * The URL currently being processed by the crawler.
+     */
+    private String currentUrl;
+
+    /**
      * Timestamp when the job was initially queued or started.
      */
     @CreationTimestamp

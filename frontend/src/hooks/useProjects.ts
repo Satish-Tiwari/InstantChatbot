@@ -98,3 +98,69 @@ export function useDownloadBot() {
     },
   });
 }
+
+/** Delete a project */
+export function useDeleteProject() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (projectId: number) => api.deleteProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.all });
+      toast.success('Project deleted!');
+      router.push('/dashboard');
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
+  });
+}
+
+/** Stop crawling */
+export function useStopCrawl() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (projectId: number) => api.stopCrawl(projectId),
+    onSuccess: (_, projectId) => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
+      toast.success('Stopping crawl...');
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
+  });
+}
+
+/** Pause crawling */
+export function usePauseCrawl() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (projectId: number) => api.pauseCrawl(projectId),
+    onSuccess: (_, projectId) => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
+      toast.success('Crawl paused ⏸️');
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
+  });
+}
+
+/** Resume crawling */
+export function useResumeCrawl() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (projectId: number) => api.resumeCrawl(projectId),
+    onSuccess: (_, projectId) => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
+      toast.success('Crawl resumed!');
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
+    },
+  });
+}

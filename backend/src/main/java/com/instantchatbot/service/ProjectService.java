@@ -57,6 +57,11 @@ public class ProjectService {
                 .websiteUrl(request.getWebsiteUrl())
                 .user(user)
                 .status(ProjectStatus.PENDING)
+                .customAiProvider(request.getCustomAiProvider())
+                .customOpenAiApiKey(request.getCustomOpenAiApiKey())
+                .customAnthropicApiKey(request.getCustomAnthropicApiKey())
+                .customGoogleProjectId(request.getCustomGoogleProjectId())
+                .customGoogleLocation(request.getCustomGoogleLocation())
                 .build();
 
         project = projectRepository.save(project);
@@ -137,6 +142,22 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
     }
 
+    /**
+     * Deletes a project and its associated data.
+     *
+     * @param projectId the identifier of the project 
+     * @param userId the identifier of the owner
+     * @throws ResourceNotFoundException if the project does not exist for the user
+     */
+    @Transactional
+    public void deleteProject(Long projectId, Long userId) {
+        Project project = projectRepository.findByIdAndUserId(projectId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        
+        projectRepository.delete(project);
+        log.info("Project deleted: {} for user: {}", projectId, userId);
+    }
+
     private ProjectResponse toResponse(Project project) {
         CrawlJobResponse crawlJobResponse = null;
         if (project.getCrawlJob() != null) {
@@ -148,6 +169,7 @@ public class ProjectService {
                     .chunksCreated(cj.getChunksCreated())
                     .status(cj.getStatus())
                     .errorMessage(cj.getErrorMessage())
+                    .currentUrl(cj.getCurrentUrl())
                     .startedAt(cj.getStartedAt())
                     .completedAt(cj.getCompletedAt())
                     .build();
@@ -164,6 +186,10 @@ public class ProjectService {
                 .downloadReady(project.getStatus() == ProjectStatus.READY)
                 .createdAt(project.getCreatedAt())
                 .updatedAt(project.getUpdatedAt())
+                .customAiProvider(project.getCustomAiProvider())
+                .hasCustomOpenAiKey(project.getCustomOpenAiApiKey() != null && !project.getCustomOpenAiApiKey().isBlank())
+                .hasCustomAnthropicKey(project.getCustomAnthropicApiKey() != null && !project.getCustomAnthropicApiKey().isBlank())
+                .hasCustomGoogleKey(project.getCustomGoogleProjectId() != null && !project.getCustomGoogleProjectId().isBlank())
                 .build();
     }
 }

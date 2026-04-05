@@ -8,7 +8,7 @@ import type {
   CreateProjectFormValues,
 } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
 
 class ApiClient {
   private client: AxiosInstance;
@@ -19,7 +19,7 @@ class ApiClient {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    // Request interceptor — attach JWT
+    // Request interceptor - attach JWT
     this.client.interceptors.request.use((config) => {
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('chatgen_token');
@@ -30,7 +30,7 @@ class ApiClient {
       return config;
     });
 
-    // Response interceptor — handle 401
+    // Response interceptor - handle 401
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
@@ -44,7 +44,7 @@ class ApiClient {
     );
   }
 
-  // ── Auth ──
+  // --- Auth ---
   async register(data: RegisterFormValues): Promise<AuthResponse> {
     const res = await this.client.post<AuthResponse>('/api/auth/register', data);
     return res.data;
@@ -60,7 +60,7 @@ class ApiClient {
     return res.data;
   }
 
-  // ── Projects ──
+  // --- Projects ---
   async getProjects(): Promise<Project[]> {
     const res = await this.client.get<Project[]>('/api/projects');
     return res.data;
@@ -76,7 +76,7 @@ class ApiClient {
     return res.data;
   }
 
-  // ── Crawl ──
+  // --- Crawl ---
   async startCrawl(projectId: number): Promise<{ message: string }> {
     const res = await this.client.post(`/api/projects/${projectId}/crawl`);
     return res.data;
@@ -87,7 +87,7 @@ class ApiClient {
     return res.data;
   }
 
-  // ── Chat ──
+  // --- Chat ---
   async sendMessage(projectId: number, message: string): Promise<ChatResponse> {
     const res = await this.client.post<ChatResponse>(
       `/api/projects/${projectId}/chat`,
@@ -96,11 +96,31 @@ class ApiClient {
     return res.data;
   }
 
-  // ── Download ──
+  // --- Download ---
   async downloadBot(projectId: number): Promise<Blob> {
     const res = await this.client.get(`/api/projects/${projectId}/download`, {
       responseType: 'blob',
     });
+    return res.data;
+  }
+
+  // --- Project Lifecycle ---
+  async deleteProject(id: number): Promise<void> {
+    await this.client.delete(`/api/projects/${id}`);
+  }
+
+  async stopCrawl(projectId: number): Promise<{ message: string }> {
+    const res = await this.client.post(`/api/projects/${projectId}/stop`);
+    return res.data;
+  }
+
+  async pauseCrawl(projectId: number): Promise<{ message: string }> {
+    const res = await this.client.post(`/api/projects/${projectId}/pause`);
+    return res.data;
+  }
+
+  async resumeCrawl(projectId: number): Promise<{ message: string }> {
+    const res = await this.client.post(`/api/projects/${projectId}/resume`);
     return res.data;
   }
 }

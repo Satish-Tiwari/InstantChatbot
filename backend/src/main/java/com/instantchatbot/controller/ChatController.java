@@ -76,7 +76,7 @@ public class ChatController {
 
         log.info("Chat request for project {}: {}", projectId, request.getMessage());
 
-        // Use Spring AI RagService directly — no external HTTP call
+        // Use Spring AI RagService directly - no external HTTP call
         RagAnswer ragAnswer = ragService.generateAnswer(
                 projectId.toString(), request.getMessage());
 

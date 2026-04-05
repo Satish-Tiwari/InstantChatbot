@@ -73,4 +73,19 @@ public class ProjectController {
         ProjectResponse response = projectService.getProject(id, user.getId());
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Deletes a project and its associated data by identifier.
+     *
+     * @param user the authenticated user principal
+     * @param id the unique identifier of the project to delete
+     * @return an empty response with success status
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long id) {
+        projectService.deleteProject(id, user.getId());
+        return ResponseEntity.noContent().build();
+    }
 }

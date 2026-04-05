@@ -1,6 +1,6 @@
-// ═══════════════════════════════════════════════
+// -----------------------------------------------
 // Domain Types
-// ═══════════════════════════════════════════════
+// -----------------------------------------------
 
 export type ProjectStatus =
   | 'PENDING'
@@ -9,9 +9,10 @@ export type ProjectStatus =
   | 'EMBEDDING'
   | 'GENERATING'
   | 'READY'
+  | 'PAUSED'
   | 'FAILED';
 
-export type CrawlStatus = 'QUEUED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
+export type CrawlStatus = 'QUEUED' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 
 export interface User {
   id: number;
@@ -33,6 +34,7 @@ export interface CrawlJob {
   chunksCreated: number;
   status: CrawlStatus;
   errorMessage: string | null;
+  currentUrl: string | null;
   startedAt: string | null;
   completedAt: string | null;
 }
@@ -48,6 +50,10 @@ export interface Project {
   downloadReady: boolean;
   createdAt: string;
   updatedAt: string;
+  customAiProvider?: string;
+  hasCustomOpenAiKey?: boolean;
+  hasCustomAnthropicKey?: boolean;
+  hasCustomGoogleKey?: boolean;
 }
 
 export interface ChatMessage {
@@ -70,9 +76,9 @@ export interface ApiError {
   timestamp: string;
 }
 
-// ═══════════════════════════════════════════════
+// -----------------------------------------------
 // Form Schemas (used with React Hook Form + Zod)
-// ═══════════════════════════════════════════════
+// -----------------------------------------------
 
 export interface LoginFormValues {
   email: string;
@@ -88,6 +94,11 @@ export interface RegisterFormValues {
 export interface CreateProjectFormValues {
   name: string;
   websiteUrl: string;
+  customAiProvider?: string;
+  customOpenAiApiKey?: string;
+  customAnthropicApiKey?: string;
+  customGoogleProjectId?: string;
+  customGoogleLocation?: string;
 }
 
 export interface ChatFormValues {
