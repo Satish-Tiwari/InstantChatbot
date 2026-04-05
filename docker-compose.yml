@@ -7,14 +7,14 @@ services:
     container_name: instantchatbot-postgres
     environment:
       POSTGRES_DB: instantchatbot
-      POSTGRES_USER: instantchatbot
-      POSTGRES_PASSWORD: instantchatbot123
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U instantchatbot"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,8 +35,8 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: instantchatbot
-      DB_USERNAME: instantchatbot
-      DB_PASSWORD: instantchatbot123
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
       ZIP_STORAGE_PATH: /app/generated-bots
       CORS_ORIGINS: http://localhost:3000
       SERVER_PORT: 8080

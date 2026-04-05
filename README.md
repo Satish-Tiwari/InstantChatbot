@@ -62,104 +62,51 @@ A SaaS platform that transforms any website into a deployable AI-powered chatbot
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Development)
 
-### Prerequisites
+Follow these steps to run the complete project locally on your terminal.
 
-- Docker & Docker Compose
-- OpenAI API key
-
-### 1. Clone & Configure
-
+### 1. Start the Database (PostgreSQL + PGVector)
+Use Docker to run the database with the vector extension.
 ```bash
-git clone <repository-url>
-cd InstantChatbot
-
-# Create .env for each service from their templates
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+# This starts the database on port 5433 (to avoid conflicts with local Postgres)
+docker compose up -d postgres
 ```
 
-Edit **`backend/.env`** — set your secrets:
-
-```env
-OPENAI_API_KEY=sk-your-key-here
-JWT_SECRET=<generate-a-strong-random-string>
-```
-
-Edit **`frontend/.env`** — set your secret:
-
-```env
-NEXTAUTH_SECRET=<generate-a-strong-random-string>
-```
-
-> ⚠️ **Each service has its own secret key.** Never reuse the same value for both.
-
-### 2. Start with Docker Compose
-
+### 2. Start the Backend (Spring Boot AI)
+Navigate to the `backend` folder and run with Maven.
 ```bash
-docker-compose up --build
+cd backend
+mvn spring-boot:run
 ```
+*Note: Ensure your `backend/.env` is configured with your `OPENAI_API_KEY`.*
 
-This starts 3 services:
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080
-- **PostgreSQL + PGVector**: localhost:5432
-
-### 3. Use the Platform
-
-1. Open http://localhost:3000
-2. Create an account
-3. Create a new project with a website URL
-4. Click "Start Crawling"
-5. Wait for processing to complete
-6. Chat with your bot or download the ZIP
+### 3. Start the Frontend (Next.js)
+Navigate to the `frontend` folder and start the dev server.
+```bash
+cd frontend
+npm run dev
+```
+*The UI will be available at http://localhost:3000.*
 
 ---
 
-## 💻 Development Setup (Without Docker)
+## 🔍 Database Inspection
+Use these commands to verify your data inside the running Docker container:
 
-### Database (PostgreSQL + PGVector)
+- **List Tables:**
+  ```bash
+  docker exec -it instantchatbot-postgres psql -U postgres -d instantchatbot -c "\dt"
+  ```
+- **View Vector Data:**
+  ```bash
+  docker exec -it instantchatbot-postgres psql -U postgres -d instantchatbot -c "SELECT * FROM vector_store LIMIT 5;"
+  ```
+- **Interactive Shell:**
+  ```bash
+  docker exec -it instantchatbot-postgres psql -U postgres -d instantchatbot
+  ```
 
-```bash
-docker run -d -p 5432:5432 \
-  -e POSTGRES_DB=instantchatbot \
-  -e POSTGRES_USER=instantchatbot \
-  -e POSTGRES_PASSWORD=instantchatbot123 \
-  pgvector/pgvector:pg16
-```
-
-### Backend (Spring Boot)
-
-```bash
-cd backend
-cp .env.example .env      # ← backend's own secret key
-# Edit .env → set OPENAI_API_KEY and JWT_SECRET
-mvn spring-boot:run
-```
-
-Key env vars in `backend/.env.example`:
-| Variable | Purpose |
-|----------|----------|
-| `OPENAI_API_KEY` | Required — OpenAI API access |
-| `JWT_SECRET` | Backend-only secret for signing JWTs |
-| `DB_*` | PostgreSQL connection |
-
-### Frontend (Next.js)
-
-```bash
-cd frontend
-cp .env.example .env      # ← frontend's own secret key
-# Edit .env → set NEXTAUTH_SECRET
-npm install
-npm run dev
-```
-
-Key env vars in `frontend/.env.example`:
-| Variable | Purpose |
-|----------|----------|
-| `NEXT_PUBLIC_API_URL` | Backend URL (default `http://localhost:8080`) |
-| `NEXTAUTH_SECRET` | Frontend-only secret for session signing |
 
 ---
 
